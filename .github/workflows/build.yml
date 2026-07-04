@@ -18,10 +18,14 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-          cache: 'gradle'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Download Gradle
+        run: |
+          mkdir -p gradle/wrapper
+          cd gradle/wrapper
+          curl -O https://services.gradle.org/distributions/gradle-8.2-bin.zip
+          unzip -q gradle-8.2-bin.zip
+          cd ../../
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
