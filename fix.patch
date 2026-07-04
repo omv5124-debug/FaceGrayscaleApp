@@ -1,4 +1,78 @@
-git apply fix.patch
-git add -A
-git commit -m "Fix: FaceWatchService must extend LifecycleService for CameraX bindToLifecycle"
-git push
+diff --git a/app/build.gradle b/app/build.gradle
+index 088a412..36301b6 100644
+--- a/app/build.gradle
++++ b/app/build.gradle
+@@ -39,5 +39,8 @@ dependencies {
+ 
+     // ML Kit Face Detection
+     implementation 'com.google.mlkit:face-detection:16.1.6'
++
++    // Needed so FaceWatchService can be a LifecycleOwner for CameraX's bindToLifecycle()
++    implementation 'androidx.lifecycle:lifecycle-service:2.7.0'
+ }
+ 
+diff --git a/app/src/main/java/com/example/facegrayscale/FaceWatchService.java b/app/src/main/java/com/example/facegrayscale/FaceWatchService.java
+index 1a6bbc4..af6ca1c 100644
+--- a/app/src/main/java/com/example/facegrayscale/FaceWatchService.java
++++ b/app/src/main/java/com/example/facegrayscale/FaceWatchService.java
+@@ -4,7 +4,6 @@ import android.Manifest;
+ import android.app.Notification;
+ import android.app.NotificationChannel;
+ import android.app.NotificationManager;
+-import android.app.Service;
+ import android.content.Intent;
+ import android.content.pm.PackageManager;
+ import android.os.Build;
+@@ -20,6 +19,7 @@ import androidx.camera.core.Preview;
+ import androidx.camera.lifecycle.ProcessCameraProvider;
+ import androidx.core.app.NotificationCompat;
+ import androidx.core.content.ContextCompat;
++import androidx.lifecycle.LifecycleService;
+ 
+ import com.google.common.util.concurrent.ListenableFuture;
+ import com.google.mlkit.vision.common.InputImage;
+@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.Executors;
+ import java.util.concurrent.atomic.AtomicBoolean;
+ 
+-public class FaceWatchService extends Service {
++public class FaceWatchService extends LifecycleService {
+     private static final String TAG = "FaceWatchService";
+     private static final String CHANNEL_ID = "face_watch_channel";
+     private static final int NOTIFICATION_ID = 1;
+@@ -66,6 +66,7 @@ public class FaceWatchService extends Service {
+ 
+     @Override
+     public int onStartCommand(Intent intent, int flags, int startId) {
++        super.onStartCommand(intent, flags, startId);
+         Log.d(TAG, "Service Started");
+ 
+         startForeground(NOTIFICATION_ID, createNotification());
+@@ -193,7 +194,8 @@ public class FaceWatchService extends Service {
+ 
+     @Nullable
+     @Override
+-    public IBinder onBind(Intent intent) {
++    public IBinder onBind(@NonNull Intent intent) {
++        super.onBind(intent);
+         return null;
+     }
+ }
+diff --git a/gradle.properties b/gradle.properties
+new file mode 100644
+index 0000000..3c7d6a4
+--- /dev/null
++++ b/gradle.properties
+@@ -0,0 +1,12 @@
++# Project-wide Gradle settings.
++
++# Use AndroidX instead of the old support library — required because this
++# project depends on androidx.* libraries (appcompat, camera, lifecycle, etc.)
++android.useAndroidX=true
++
++# Automatically convert third-party libraries to use AndroidX
++android.enableJetifier=true
++
++# Enable Gradle's build cache and parallel builds for faster CI builds
++org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
++org.gradle.parallel=true
