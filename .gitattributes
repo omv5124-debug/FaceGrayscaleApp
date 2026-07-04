@@ -6,3 +6,5 @@ gradle/wrapper/gradle-wrapper.jar binary
 # Batch files need CRLF on Windows
 gradlew.bat text eol=crlf
 
+# Properties files must keep exact bytes (escape sequences, single backslashes)
+gradle/wrapper/gradle-wrapper.properties text
