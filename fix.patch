@@ -1,0 +1,4 @@
+git apply fix.patch
+git add -A
+git commit -m "Fix: FaceWatchService must extend LifecycleService for CameraX bindToLifecycle"
+git push
