@@ -1,4 +1,3 @@
-@"
 name: Build APK
 
 on:
@@ -9,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,4 +33,3 @@ jobs:
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
-"@ | Out-File -FilePath .github/workflows/build.yml -Encoding UTF8

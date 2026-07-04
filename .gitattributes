@@ -1,2 +1,8 @@
-gradlew text eol=lf
+* text=auto eol=lf
+
+# Gradle wrapper jar must be tracked as binary to avoid corruption
+gradle/wrapper/gradle-wrapper.jar binary
+
+# Batch files need CRLF on Windows
 gradlew.bat text eol=crlf
+
