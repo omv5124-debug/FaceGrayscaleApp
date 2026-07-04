@@ -24,11 +24,9 @@ jobs:
           mkdir -p gradle/wrapper
           cd gradle/wrapper
           wget https://services.gradle.org/distributions/gradle-8.2-bin.zip
-          unzip gradle-8.2-bin.zip
-          mv gradle-8.2 gradle-8.2-original
-          cd gradle-8.2-original
-          cp lib/gradle-wrapper.jar ../gradle-wrapper.jar
-          cd ../../..
+          unzip -q gradle-8.2-bin.zip
+          cp gradle-8.2/lib/gradle-wrapper.jar ./gradle-wrapper.jar
+          cd ../..
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
