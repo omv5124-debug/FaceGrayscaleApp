@@ -1,3 +1,4 @@
+@"
 name: Build APK
 
 on:
@@ -22,6 +23,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build APK
         run: ./gradlew assembleDebug
 
@@ -30,3 +34,4 @@ jobs:
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+"@ | Out-File -FilePath .github/workflows/build.yml -Encoding UTF8
